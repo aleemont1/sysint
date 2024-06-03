@@ -5,26 +5,8 @@ echo "Creating base Debian image with network utilities"
 if [ "$(docker ps -q -f name=debian_base_networking)" ]; then
     docker kill debian_base_networking
 fi
-if [ "$(docker ps -aq -f name=debian_base_networking)" ]; then
-	docker rm debian_base_networking
-fi
-docker run -itd --name debian_base_networking debian
-docker exec -it -u root:root debian_base_networking apt update
-docker exec -it -u root:root debian_base_networking apt install -y iptables net-tools netcat-traditional iputils-ping iproute2 curl
-docker exec -it -u root:root debian_base_networking apt clean
-docker kill debian_base_networking
 
-# Confirm before removing Docker image
-if [ "$(docker images -q ${USER}/debian_with_network_utilities)" ]; then
-	echo "Removing existing docker image ${USER}/debian_with_network_utilities"
-	read -p "Are you sure? (Y/n): " confirm
-	confirm=${confirm:-Y}
-	if [[ $confirm =~ ^[Yy]$ ]]; then
-	    docker rmi -f $USER/debian_with_network_utilities
-	fi
-fi
-docker commit -m "Add network utilities" debian_base_networking $USER/debian_with_network_utilities
-
+docker build -t $USER/debian_with_network_utilities .
 
 for container in Ca Cb; do
 	if [ "$(docker ps -q -f name=$container)" ]; then
