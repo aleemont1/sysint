@@ -41,7 +41,7 @@ for network in N100 N200; do
 done
 
 echo "Creating Docker networks"
-docker network create -d bridge -o "com.docker.network.bridge.name=br100" --subnet 10.0.100.0/24 --ip-range 10.0.100.0/24 --gateway 10.0.100.1 N100
+docker network create -d bridge -o "com.docker.network.bridge.name=br100" -o "com.docker.network.bridge.enable_ip_masquerade=true" --subnet 10.0.100.0/24 --ip-range=10.0.100.0/24  --gateway 10.0.100.1  N100
 docker network create -d bridge -o "com.docker.network.bridge.name=br200" --subnet 10.0.200.0/24 --ip-range 10.0.200.0/24 --gateway 10.0.200.1 N200
 ifconfig
 echo "Creating Docker containers"
